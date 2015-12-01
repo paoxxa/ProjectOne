@@ -1,1 +1,5 @@
-# ProjectOne this is a readme file about ProjectOne
+*********************# ProjectOne*********************
+======================================================
+
+This is a readme file about Html snippets
+with simple samples of all the tags.
