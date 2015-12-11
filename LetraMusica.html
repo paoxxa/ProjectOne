@@ -1,0 +1,144 @@
+
+<script src="js/jquery-2.1.4.js"></script>
+<link href="css/bootstrap-theme.css" rel="stylesheet" />
+<link href="css/bootstrap-theme.min.css" rel="stylesheet" />
+<link href="css/bootstrap.css" rel="stylesheet" />
+<link href="css/bootstrap.min.css" rel="stylesheet" />
+<div class="container">
+    <div>
+        <nav class="navbar-default">
+            <a href="index.html">Inicio</a> |
+            <a href="LetraMusica.html">Letra & Musica</a> |
+            <a href="NuevaLetra.html">Nueva Letra</a> |
+        </nav>
+    </div>
+    <div class="col-md-6">
+        <section class="col-md-12">
+            <h1>Audio</h1>
+            <input type="file" id="files" name="files[]" multiple />
+            <audio id="audioControl" controls>
+                Your browser does not support
+                the audio element.
+            </audio>
+            <article id="list"></article>
+
+        </section>
+        <hr>
+        <section class="col-md-12">
+            <h1>Letra</h1>
+            <input type="file" id="files1" name="files1[]" multiple />
+            <div id="list1">
+                <p id="titles"></p>
+            </div>
+
+        </section>
+    </div>
+    <div class="col-md-6">
+
+        <object id="txt" style="width:99%;height:900px"></object>
+
+    </div>
+</div class="container">
+<script>
+
+    function handleFileSelect(evt) {
+        "use strict";
+        try {
+            var files = evt.target.files; // FileList object
+            var id=0;
+            // Loop through the FileList and render image files as thumbnails.
+            for (var i = 0, f; f = files[i]; i++) {
+                //alert(f.type);
+
+                // Only process files.
+                if (!f) {
+                    alert("Failed to load file");
+                }else 
+                    if (!f.type.match('mp3.*') && !f.type.match('mpeg.*')) {
+                    alert(f.name + " No es un archivo mp3 .");
+                    //continue;
+                    return false;
+                }
+                else {
+                    var reader = new FileReader();
+                    var div = document.getElementById('list');
+
+                    // Closure to capture the file information.
+                    reader.onload = (function (theFile) {
+                        return function (e) {                                                       
+                            // Render thumbnail.
+                            div.innerHTML += [' <a id="link' + id + '" class="thumb" href="#"  data-location="' + e.target.result + '" name="' + e.target.result + '" onclick="readFile(event);">', decodeURIComponent(id + " " + theFile.name), '</a>'].join('');
+                            id++;
+                        };
+                    })(f);
+
+                    // Read in the image file as a data URL.
+                    reader.readAsDataURL(f);
+                }
+            }
+        } catch (ex) {
+        } finally { }
+    }
+
+    function readSingleFile(evt) {
+        "use strict";
+        try {
+            //Retrieve the first (and only!) File from the FileList object
+            var files = evt.target.files;
+            for (var i = 0, f; f = files[i]; i++) {
+                if (!f) {
+                    alert("Failed to load file " + f.type);
+                } else if (!f.type.match("text.*")) {
+                    alert(f.name + " No es un archivo .txt");
+                    return false;
+                } else {
+                    var reader = new FileReader();
+                    var id = 0;
+                    // Closure to capture the file information.
+                    reader.onload = (function (theFile) {
+                        return function (e) {
+                            var contents = e.target.result;
+                            // Render thumbnail.
+                            var span = document.createElement('span');
+                            id++;
+                            span.innerHTML = ['<a id="lyric' + id + '"class="thumb" href="#" name="', e.target.result, '" onclick="readText(event)" >', escape(theFile.name), '</a>'].join('');
+                            document.getElementById('titles').insertBefore(span, null);
+                            document.getElementById('txt').data = "";
+                        };
+                    })(f);
+
+                    // Read in the image file as a data URL.
+                    reader.readAsDataURL(f);
+                }
+            }
+        } catch (ex) {
+        } finally { }
+    }
+
+    function readFile(event) {
+        "use strict";
+        try {
+            var elm = document.getElementById(event.target.id);
+            var jqElm = $(event.target.id);
+            var track = elm.name;
+            $("audio").attr("src");
+            $("audio").attr("src", track).trigger();
+            document.getElementById("audioControl").play();
+        } catch (ex) { } finally { }
+
+    }
+
+    function readText(event) {
+        "use strict";
+        try {
+            var elm = document.getElementById(event.target.id);
+            var jqElm = $(event.target.id);
+            var track = elm.name;
+            document.getElementById("txt").data = track;
+        } catch (ex) {
+        } finally { }
+    }
+
+    document.getElementById('files').addEventListener('change', handleFileSelect, false);
+    document.getElementById('files1').addEventListener('change', readSingleFile, false);
+</script>
